@@ -6,5 +6,5 @@ int main()
     printf("Branch: Computer Engineering\n");
     printf("Year: Second Year\n");
 
-    return 0;
+    
 }
