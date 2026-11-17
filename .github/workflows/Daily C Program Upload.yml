@@ -1,0 +1,39 @@
+name: Daily C Program Upload
+
+on:
+  schedule:
+    # Runs every day at 9:00 AM IST (03:30 UTC)
+    - cron: '30 3 * * *'
+  workflow_dispatch: # Allows manual testing from the Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  publish-daily-c:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Move next C program and push
+        run: |
+          NEXT_FILE=$(find queue -maxdepth 1 -type f -name "*.c" | sort | head -n 1)
+
+          if [ -z "$NEXT_FILE" ]; then
+            echo "No .c files left in queue/."
+            exit 0
+          fi
+
+          FILENAME=$(basename "$NEXT_FILE")
+          mkdir -p programs
+          mv "$NEXT_FILE" "programs/$FILENAME"
+
+          git config user.name "Harshwardhan Shelke"
+          git config user.email "harshshelke2502@gmail.com"
+
+          git add -A
+          git commit -m "Add C program: $FILENAME"
+          git push
+          
